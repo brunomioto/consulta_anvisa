@@ -16,7 +16,7 @@ consulta_anvisa <- function(cnpj){
 
 # Parâmetros
 query <- list(
-  "count" = 200,
+  "count" = 500,
   "filter[cnpj]" = cnpj,
   "page" = 1
 )
@@ -47,39 +47,5 @@ empresas <- c("05823205000190", #maquira
               "04037992000344" #ingamed
               )
 
-purrr::map_df(.x = empresas,.f =  consulta_anvisa) %>% 
-  View()
+resultados_consulta <- purrr::map_df(.x = empresas,.f =  consulta_anvisa)
 
-
-
-# test cnpj ---------------------------------------------------------------
-
-
-#maquira 05823205000190
-#ingamed 04037992000344
-#pfizer  46070868003699
-#3m      45985371000108
-
-
-# Parâmetros
-query <- list(
-  "count" = 500,
-  "filter[cnpj]" = "05823205000190",
-  "page" = 1
-)
-
-# Fazer requisição
-resp <- httr::GET(
-  "https://consultas.anvisa.gov.br/api/consulta/saude",
-  query = query,
-  httr::add_headers("Authorization" = "Guest")
-)
-
-resultado <- httr::content(resp)
-
-
-df <- data.frame(matrix(unlist(resultado$content), nrow=length(resultado$content), byrow=TRUE))
-
-df %>% 
-  View()
-               
