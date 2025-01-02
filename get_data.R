@@ -156,11 +156,12 @@ dataset_anterior <- data_anterior |>
          data_entrada_anterior = data_entrada,
          data_atualizacao_anterior = data_atualizacao,
          expediente_numero,
-         processo_numero,
+         # processo_numero,
          razao_social) |> 
   mutate(expediente_numero = as.numeric(expediente_numero),
-         processo_numero = as.numeric(processo_numero)) |> 
-  select(-processo_numero)
+         # processo_numero = as.numeric(processo_numero)
+         ) #|> 
+  # select(-processo_numero)
   
 lista_geral_diff <- lista_geral |> 
   left_join(dataset_anterior,
