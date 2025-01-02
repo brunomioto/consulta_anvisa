@@ -3,7 +3,7 @@ library(httr2)
 library(lubridate)
 library(glue)
 
-url <- "https =//consultas.anvisa.gov.br/api/fila/?filter%5Barea%5D=8&filter%5Bfila%5D=285&filter%5Bsubfila%5D=198"
+url <- "https://consultas.anvisa.gov.br/api/fila/?filter%5Barea%5D=8&filter%5Bfila%5D=285&filter%5Bsubfila%5D=198"
 # 
 req <- request(url)
 
