@@ -142,7 +142,7 @@ readr::write_csv(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.
 data_anterior_format <- format(lubridate::ymd_hms(ultima_data)-days(1), "%Y_%m_%d")
 
 
-data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/master/data/lista_geral_{data_anterior_format}.csv"))
+data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/master/data/lista_geral_ultima.csv"))
 
 # data_anterior <- readr::read_csv(glue::glue("data/lista_geral_{data_anterior_format}.csv"))
 
