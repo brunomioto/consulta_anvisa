@@ -19,6 +19,7 @@ jobs:
           install.packages("httr2")
           install.packages("lubridate")
           install.packages("glue")
+          install.packages("jsonlite")
         shell: Rscript {0}
         
       - name: Get data and upload file
