@@ -127,7 +127,8 @@ lista_geral <- lista_materiais |>
             by = c("expediente_numero", "processo_numero")) |> 
   mutate(dias_analise = lubridate::interval(data_entrada, data_atualizacao)%/% days(1),
          expediente_numero = as.numeric(expediente_numero),
-         processo_numero = as.numeric(processo_numero))
+         processo_numero = as.numeric(processo_numero)) |> 
+  select(-processo_numero)
 
 readr::write_csv(lista_geral, glue::glue("data/lista_geral_ultima.csv"))
 
@@ -137,6 +138,7 @@ ultima_data <- lista_geral |>
   arrange(desc(data_atualizacao)) |> 
   slice_head(n=1) |> 
   pull()
+
 ultima_data_format <- format(lubridate::ymd_hms(ultima_data), "%Y_%m_%d")
 writexl::write_xlsx(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.xlsx"))
 readr::write_csv(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.csv"))
@@ -157,10 +159,12 @@ dataset_anterior <- data_anterior |>
          processo_numero,
          razao_social) |> 
   mutate(expediente_numero = as.numeric(expediente_numero),
-         processo_numero = as.numeric(processo_numero))
+         processo_numero = as.numeric(processo_numero)) |> 
+  select(-processo_numero)
   
 lista_geral_diff <- lista_geral |> 
-  left_join(dataset_anterior) |> 
+  left_join(dataset_anterior,
+            by = "expediente_numero") |> 
   mutate(diff_ordem = ordem_analise - ordem_analise_anterior)
 
 writexl::write_xlsx(lista_geral_diff, glue::glue("data/lista_geral_diff.xlsx"))
