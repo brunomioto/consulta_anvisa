@@ -146,7 +146,7 @@ readr::write_csv(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.
 data_anterior_format <- format(lubridate::ymd_hms(ultima_data)-days(1), "%Y_%m_%d")
 
 
-data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/refs/heads/master/data/lista_geral_ultima.csv?token=GHSAT0AAAAAACOVZFFBWUXEWT6S5QTQNTLGZ3W4JZA"))
+data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/refs/heads/master/data/lista_geral_ultima.csv"))
 
 # data_anterior <- readr::read_csv(glue::glue("data/lista_geral_{data_anterior_format}.csv"))
 
@@ -170,27 +170,3 @@ lista_geral_diff <- lista_geral |>
 
 writexl::write_xlsx(lista_geral_diff, glue::glue("data/lista_geral_diff.xlsx"))
 readr::write_csv(lista_geral_diff, glue::glue("data/lista_geral_diff.csv"))
-
-
-
-
-# maquira <- bbb |> 
-#   filter(cnpj_numero == "05823205000190")
-
-
-# oi <- bbb
-
-
-# library(ggplot2)
-# oi |> 
-#   ggplot(aes(x = ordem_analise, y = dias_analise))+
-#   geom_point()
-# 
-# 
-# 
-# oi |> 
-#   mutate(hora = lubridate::hour(data_entrada)) |> 
-#   View()
-#   ggplot(aes(x = hora))+
-#   geom_histogram(binwidth = 1)
-  # select(data_entrada, hora)
