@@ -157,16 +157,23 @@ dataset_anterior <- data_anterior |>
          data_atualizacao_anterior = data_atualizacao,
          expediente_numero,
          # processo_numero,
-         razao_social) |> 
+         # razao_social
+         ) |> 
   mutate(expediente_numero = as.numeric(expediente_numero),
          # processo_numero = as.numeric(processo_numero)
          ) #|> 
   # select(-processo_numero)
   
 lista_geral_diff <- lista_geral |> 
-  left_join(dataset_anterior,
+  # slice(-4) |>
+  # mutate(ordem_analise = row_number()) |> 
+  full_join(dataset_anterior,
             by = "expediente_numero") |> 
-  mutate(diff_ordem = ordem_analise - ordem_analise_anterior)
+  mutate(diff_ordem = ordem_analise_anterior-ordem_analise,
+         diff_ordem2 = case_when(!is.na(ordem_analise) & is.na(ordem_analise_anterior) ~ "Novo",
+                                is.na(ordem_analise) & !is.na(ordem_analise_anterior) ~ "Saiu",
+                                TRUE ~ "Aguardando análise"
+                                ))
 
 writexl::write_xlsx(lista_geral_diff, glue::glue("data/lista_geral_diff.xlsx"))
 readr::write_csv(lista_geral_diff, glue::glue("data/lista_geral_diff.csv"))
