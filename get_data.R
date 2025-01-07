@@ -146,7 +146,7 @@ readr::write_csv(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.
 data_anterior_format <- format(lubridate::ymd_hms(ultima_data)-days(1), "%Y_%m_%d")
 
 
-data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/refs/heads/master/data/lista_geral_ultima.csv"))
+data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/refs/heads/master/data/lista_geral_2025_01_06.csv"))
 
 # data_anterior <- readr::read_csv(glue::glue("data/lista_geral_{data_anterior_format}.csv"))
 
@@ -156,8 +156,11 @@ dataset_anterior <- data_anterior |>
          data_entrada_anterior = data_entrada,
          data_atualizacao_anterior = data_atualizacao,
          expediente_numero,
+         cnpj_numero,
+         expediente_texto,
+         processo_texto,
          # processo_numero,
-         # razao_social
+         razao_social
          ) |> 
   mutate(expediente_numero = as.numeric(expediente_numero),
          # processo_numero = as.numeric(processo_numero)
@@ -168,7 +171,8 @@ lista_geral_diff <- lista_geral |>
   # slice(-4) |>
   # mutate(ordem_analise = row_number()) |> 
   full_join(dataset_anterior,
-            by = "expediente_numero") |> 
+            # by = "expediente_numero"
+            ) |> 
   mutate(diff_ordem = ordem_analise_anterior-ordem_analise,
          diff_ordem2 = case_when(!is.na(ordem_analise) & is.na(ordem_analise_anterior) ~ "Novo",
                                 is.na(ordem_analise) & !is.na(ordem_analise_anterior) ~ "Saiu",
