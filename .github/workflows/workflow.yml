@@ -2,11 +2,11 @@ name: dados_anvisa
 on: 
   workflow_dispatch:
   schedule:
-  - cron: '0 12 * * *'
+  - cron: '0 12 * * 1-5'
   
 jobs:
   busca_dados:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.PAT_GITHUB }}
     steps:
@@ -22,15 +22,32 @@ jobs:
           install.packages("jsonlite")
           install.packages("readr")
           install.packages("writexl")
+          install.packages("stringr")
         shell: Rscript {0}
-        
+
       - name: Get data and upload file
-        run: Rscript get_data.R
-        
+        id: run_script
+        run: |
+          Rscript get_data.R
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Check if previous step failed
+        if: ${{ failure() }}
+        run: echo "Script failed. Scheduling retry."
+
+      - name: Retry script (if needed)
+        if: ${{ failure() }}
+        run: |
+          sleep 3600 # Aguarda 1 hora antes de tentar novamente
+          Rscript get_data.R
+        shell: Rscript {0}
+
       - name: Commit results
-        run: |-
+        if: ${{ success() }}
+        run: |
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
           git add .
-          git commit -m "Latest data: ${timestamp}" || exit 0
+          git commit -m "Latest changes {timestamp}" || exit 0
           git push

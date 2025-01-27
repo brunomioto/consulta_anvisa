@@ -4,6 +4,7 @@ library(lubridate)
 library(glue)
 library(readr)
 library(writexl)
+library(stringr)
 
 url <- "https://consultas.anvisa.gov.br/api/fila/?filter%5Barea%5D=8&filter%5Bfila%5D=285&filter%5Bsubfila%5D=198"
 # 
@@ -132,6 +133,10 @@ lista_geral <- lista_materiais |>
 
 readr::write_csv(lista_geral, glue::glue("data/lista_geral_ultima.csv"))
 
+
+# ultima data -------------------------------------------------------------
+
+
 ultima_data <- lista_geral |> 
   # select(data_atualizacao) |>  |> 
   distinct(data_atualizacao) |> 
@@ -143,7 +148,29 @@ ultima_data_format <- format(lubridate::ymd_hms(ultima_data), "%Y_%m_%d")
 writexl::write_xlsx(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.xlsx"))
 readr::write_csv(lista_geral, glue::glue("data/lista_geral_{ultima_data_format}.csv"))
 
-data_anterior_format <- format(lubridate::ymd_hms(ultima_data)-days(1), "%Y_%m_%d")
+
+
+# data anterior -----------------------------------------------------------
+
+
+url <- glue::glue("https://api.github.com/repos/brunomioto/consulta_anvisa/contents/data")
+
+# Fazer a requisição para a API
+response <- request(url) |> 
+  req_perform() |> 
+  resp_body_json()
+
+# Extrair nomes dos arquivos
+file_names <- sapply(response, function(x) x$name)
+
+# Filtrar arquivos com datas no formato esperado
+ultima_data <- dates <- file_names |> 
+  stringr::str_extract("\\d{4}_\\d{2}_\\d{2}") |> # Extrai datas no formato YYYY_MM_DD
+  na.omit() |> 
+  as.Date(format = "%Y_%m_%d") |> 
+  max()
+
+data_anterior_format <- format(lubridate::ymd(ultima_data), "%Y_%m_%d")
 
 
 data_anterior <- readr::read_csv(glue::glue("https://raw.githubusercontent.com/brunomioto/consulta_anvisa/refs/heads/master/data/lista_geral_{data_anterior_format}.csv"))
