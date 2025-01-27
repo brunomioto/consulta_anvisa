@@ -26,27 +26,12 @@ jobs:
         shell: Rscript {0}
 
       - name: Get data and upload file
-        id: run_script
         run: Rscript get_data.R
-        shell: Rscript {0}
-        continue-on-error: true
-
-      - name: Check if previous step failed
-        if: ${{ failure() }}
-        run: echo "Script failed. Scheduling retry."
-
-      - name: Retry script (if needed)
-        if: ${{ failure() }}
-        run: |
-          sleep 3600 # Aguarda 1 hora antes de tentar novamente
-          Rscript get_data.R
-        shell: Rscript {0}
 
       - name: Commit results
-        if: ${{ success() }}
-        run: |
+        run: |-
           git config user.name "Automated"
           git config user.email "actions@users.noreply.github.com"
           git add .
-          git commit -m "Latest changes {timestamp}" || exit 0
+          git commit -m "Latest data: ${timestamp}" || exit 0
           git push
