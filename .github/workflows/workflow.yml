@@ -27,8 +27,7 @@ jobs:
 
       - name: Get data and upload file
         id: run_script
-        run: |
-          Rscript get_data.R
+        run: Rscript get_data.R
         shell: Rscript {0}
         continue-on-error: true
 
